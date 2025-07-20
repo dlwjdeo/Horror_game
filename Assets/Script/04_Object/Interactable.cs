@@ -4,21 +4,39 @@ using UnityEngine;
 
 public class Interactable : MonoBehaviour
 {
-    public bool isPlayerInRange = false;
+    public string promptMessage = "E키를 눌러 열기";
+    public InteractionPromptUI promptUI;
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    private bool isPlayerInRange = false;
+
+    void OnTriggerEnter2D(Collider2D other)
     {
-        if (collision.CompareTag(TagName.Player))
+        if (other.CompareTag(TagName.Player))
         {
             isPlayerInRange = true;
+            promptUI.Show(promptMessage);
         }
     }
 
-    private void OnTriggerExit2D(Collider2D collision)
+    void OnTriggerExit2D(Collider2D other)
     {
-        if (collision.CompareTag(TagName.Player))
+        if (other.CompareTag(TagName.Player))
         {
             isPlayerInRange = false;
+            promptUI.Hide();
         }
+    }
+
+    void Update()
+    {
+        if (isPlayerInRange && Input.GetKeyDown(KeyCode.E))
+        {
+            Interact();
+        }
+    }
+
+    protected virtual void Interact()
+    {
+        UIManager.Instance.interactionUI.ShowMessage(promptMessage);
     }
 }
