@@ -6,7 +6,11 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
 
+    [Header("Managers")]
     public Player player;
+    public CameraGroupController cameraGroupController;
+
+
 
     private void Awake()
     {

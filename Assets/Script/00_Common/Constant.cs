@@ -12,3 +12,9 @@ public static class TagName
     public const string Player = "Player";
     public const string HideSpot = "HideSpot";
 }
+
+public static class CameraName
+{
+    public const string Main = "CM_Main";
+    public const string Stair = "CM_StairCamera";
+}
