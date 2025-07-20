@@ -4,16 +4,16 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - Ground
+  - HideSpot
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Player
   - Water
   - UI
   - Ground
-  - 
+  - PlayerHidden
   - 
   - 
   - 
