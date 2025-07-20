@@ -8,10 +8,10 @@ public class InteractionPromptUI : MonoBehaviour
     public GameObject panel;
     public TextMeshPro promptText;
 
-    public void Show(string massage)
+    public void Show(string message)
     {
         panel.SetActive(true);
-        promptText.text = massage;
+        promptText.text = message;
     }
 
     public void Hide()
