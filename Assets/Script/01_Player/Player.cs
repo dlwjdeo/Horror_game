@@ -11,11 +11,13 @@ public class Player : MonoBehaviour
     public LayerMask groundLayer;
 
     private Rigidbody2D rb;
+    private Hideable hideable;
     private bool isGrounded;
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        hideable = GetComponent<Hideable>();
     }
 
     private void Update()
