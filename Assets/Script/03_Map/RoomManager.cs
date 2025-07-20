@@ -6,19 +6,19 @@ public class RoomManager : MonoBehaviour
 {
     public static RoomManager Instance;
 
-    private RoomLightController currentRoom;
+    private RoomController currentRoom;
 
     private void Awake()
     {
         Instance = this;
     }
 
-    public void SwitchRoom(RoomLightController newRoom)
+    public void SwitchRoom(RoomController newRoom)
     {
         if (currentRoom != null)
-            currentRoom.SetLightActive(false);
+            currentRoom.SetOverlayActive(true);
 
         currentRoom = newRoom;
-        currentRoom.SetLightActive(true);
+        currentRoom.SetOverlayActive(false);
     }
 }
