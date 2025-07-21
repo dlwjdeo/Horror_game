@@ -5,17 +5,17 @@ using UnityEngine;
 
 public class InteractionPromptUI : MonoBehaviour
 {
-    public GameObject panel;
+    public GameObject message;
     public TextMeshPro promptText;
 
     public void Show(string message)
     {
-        panel.SetActive(true);
+        this.message.SetActive(true);
         promptText.text = message;
     }
 
     public void Hide()
     {
-        panel.SetActive(false);
+        this.message.SetActive(false);
     }
 }

@@ -17,10 +17,17 @@ public class InteractionUI : MonoBehaviour
     {
         panel.SetActive(true);
         messageText.text = message;
+        StartCoroutine(HideMessage(3));
     }
 
     public void HideMessage()
     {
         panel.SetActive(false);
+    }
+
+    IEnumerator HideMessage(int sec)
+    {
+        yield return new WaitForSeconds(sec);
+        HideMessage();
     }
 }
