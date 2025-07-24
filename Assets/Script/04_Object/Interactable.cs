@@ -5,6 +5,7 @@ using UnityEngine;
 public class Interactable : MonoBehaviour
 {
     public string promptMessage = "E키를 눌러 열기";
+    public string interactMessage = "안에는 아무것도 없다";
     public InteractionPromptUI promptUI;
 
     private bool isPlayerInRange = false;
@@ -37,6 +38,6 @@ public class Interactable : MonoBehaviour
 
     protected virtual void Interact()
     {
-        UIManager.Instance.interactionUI.ShowMessage(promptMessage);
+        UIManager.Instance.interactionUI.ShowMessage(interactMessage);
     }
 }
