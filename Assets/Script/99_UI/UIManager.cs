@@ -8,6 +8,7 @@ public class UIManager : MonoBehaviour
 
     public InteractionUI interactionUI;
     public LampGauge lampGauge;
+    public HeldItemUI heldItemUI;
 
     private void Awake()
     {

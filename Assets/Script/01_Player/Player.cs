@@ -19,6 +19,7 @@ public class Player : MonoBehaviour
 
     private Rigidbody2D rb;
     private PlayerStateMachine stateMachine;
+    private PlayerInventory inventory;
 
     private float moveInputX;
     private float moveInputY;
@@ -32,6 +33,7 @@ public class Player : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         stateMachine = GetComponent<PlayerStateMachine>();
+        inventory = GetComponent<PlayerInventory>();
         remainingJumps = maxJumps;
     }
 
@@ -39,6 +41,7 @@ public class Player : MonoBehaviour
     {
         GroundCheck();
         InputCheck();
+        ItemDrop();
         UpdateStairBlockTimer();
         Jump();
         UpdateState();
@@ -59,6 +62,15 @@ public class Player : MonoBehaviour
         }
     }
 
+    private void ItemDrop()
+    {
+        if (Input.GetKeyDown(KeyCode.Q) && inventory.IsHoldingItem())
+        {
+            float facingDir = transform.localScale.x > 0 ? 1f : -1f;
+            Vector3 dropPosition = transform.position + new Vector3(facingDir, 0f, 0f);
+            inventory.DropItem(dropPosition);
+        }
+    }
     private void UpdateStairBlockTimer()
     {
         if (stairEntryBlockTimer > 0f)

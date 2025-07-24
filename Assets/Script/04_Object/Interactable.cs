@@ -8,13 +8,15 @@ public class Interactable : MonoBehaviour
     public string interactMessage = "안에는 아무것도 없다";
     public InteractionPromptUI promptUI;
 
-    private bool isPlayerInRange = false;
+    protected bool isPlayerInRange = false;
+    protected GameObject player;
 
     void OnTriggerEnter2D(Collider2D other)
     {
         if (other.CompareTag(TagName.Player))
         {
             isPlayerInRange = true;
+            player = other.gameObject;
             promptUI.Show(promptMessage);
         }
     }
@@ -24,6 +26,7 @@ public class Interactable : MonoBehaviour
         if (other.CompareTag(TagName.Player))
         {
             isPlayerInRange = false;
+            player = null;
             promptUI.Hide();
         }
     }

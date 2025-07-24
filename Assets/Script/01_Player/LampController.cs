@@ -13,7 +13,6 @@ public class LampController : MonoBehaviour
     }
     private void Update()
     {
-        // 예시: G 키로 ON/OFF 토글
         if (Input.GetKeyDown(KeyCode.G))
         {
             ToggleLamp();
@@ -40,5 +39,9 @@ public class LampController : MonoBehaviour
             lampLight.enabled = false;
             Debug.Log("게이지가 0이 되어 램프를 강제로 껐습니다.");
         }
+    }
+    public void RestoreLamp(float amount)
+    {
+        lampGauge.AddLamp(amount);
     }
 }

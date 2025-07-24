@@ -24,12 +24,12 @@ public static class CameraName
     public const string Stair = "CM_StairCamera";
     public const string Floor2 = "CM_Floor2";
 }
-
-[System.Flags]
-public enum StairEntryDirection
+public enum ItemType
 {
-    None = 0,
-    Upward = 1,
-    Downward = 2,
-    Both = Upward | Downward
+    None,
+    RustyKey,
+    SilverKey,
+    LampFuel,
+    ChestGem,
+    QuestScroll
 }
