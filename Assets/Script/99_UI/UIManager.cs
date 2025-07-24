@@ -7,6 +7,7 @@ public class UIManager : MonoBehaviour
     public static UIManager Instance;
 
     public InteractionUI interactionUI;
+    public LampGauge lampGauge;
 
     private void Awake()
     {

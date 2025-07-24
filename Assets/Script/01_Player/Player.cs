@@ -79,7 +79,6 @@ public class Player : MonoBehaviour
                 isOnStair = true;
                 rb.gravityScale = 0f;
                 GameManager.Instance.cameraGroupController.ActivateCamera(CameraName.Stair);
-                Debug.Log("계단 진입");
             }
         }
         else
@@ -170,7 +169,6 @@ public class Player : MonoBehaviour
         }
         if (collision.CompareTag(TagName.Ground) && isGrounded)
         {
-            Debug.Log("해제");
             isOnStair = false;
             stairEntryBlockTimer = stairEntryBlockTime;
             if (transform.position.y > 10f)
@@ -191,7 +189,7 @@ public class Player : MonoBehaviour
             isStair = false;
             isOnStair = false;
             rb.gravityScale = 5f;
-            rb.velocity = Vector2.zero; // 속도 완전 정지
+            rb.velocity = Vector2.zero; 
             stairEntryBlockTimer = stairEntryBlockTime;
             if (transform.position.y > 10f)
             {
@@ -208,7 +206,6 @@ public class Player : MonoBehaviour
     {
         if (collision.collider.CompareTag(TagName.Ground) && isGrounded)
         {
-            Debug.Log("해제");
             isOnStair = false;
             stairEntryBlockTimer = stairEntryBlockTime;
             if (transform.position.y > 10f)
