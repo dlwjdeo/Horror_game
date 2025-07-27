@@ -44,6 +44,7 @@ public class DialogManager : MonoBehaviour
 
         ShowCurrentLine();
         dialogPanel.SetActive(true);
+        PauseController.Instance.TryPauseGame();
     }
 
     private void Update()
@@ -95,6 +96,7 @@ public class DialogManager : MonoBehaviour
     private void EndDialog()
     {
         dialogPanel.SetActive(false);
+        PauseController.Instance.TryResumeGame();
     }
 }
 

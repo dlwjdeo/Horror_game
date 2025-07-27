@@ -12,6 +12,7 @@ public class GameManager : MonoBehaviour
 
     public Language Language = Language.Kr;
 
+    private bool isInputBlocked = false;
 
 
     private void Awake()
@@ -25,5 +26,22 @@ public class GameManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
+    }
+
+    public bool BlockInput()
+    {
+        isInputBlocked = true;
+        return isInputBlocked;
+    }
+
+    public bool UnblockInput()
+    {
+        isInputBlocked = false;
+        return isInputBlocked;
+    }
+
+    public bool GetInputBlockState()
+    {
+        return isInputBlocked;
     }
 }

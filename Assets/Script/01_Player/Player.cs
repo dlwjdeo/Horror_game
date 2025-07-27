@@ -40,6 +40,7 @@ public class Player : MonoBehaviour
     private void Update()
     {
         GroundCheck();
+        if(GameManager.Instance.GetInputBlockState()) return;
         InputCheck();
         ItemDrop();
         UpdateStairBlockTimer();
