@@ -3082,6 +3082,7 @@ GameObject:
   - component: {fileID: 1355135806}
   - component: {fileID: 1355135809}
   - component: {fileID: 1355135808}
+  - component: {fileID: 1355135810}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -3146,6 +3147,18 @@ MonoBehaviour:
   interactionUI: {fileID: 2006814351}
   lampGauge: {fileID: 1677686884}
   heldItemUI: {fileID: 332671347}
+--- !u!114 &1355135810
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1355135805}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1da5455d1dad9ce4d99c5d7a11095e99, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1473732396
 PrefabInstance:
   m_ObjectHideFlags: 0
