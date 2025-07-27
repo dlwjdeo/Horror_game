@@ -33,3 +33,9 @@ public enum ItemType
     ChestGem,
     QuestScroll
 }
+
+public enum Language
+{
+    Kr,
+    En,
+}

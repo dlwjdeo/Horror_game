@@ -10,6 +10,8 @@ public class GameManager : MonoBehaviour
     public Player player;
     public CameraGroupController cameraGroupController;
 
+    public Language Language = Language.Kr;
+
 
 
     private void Awake()
