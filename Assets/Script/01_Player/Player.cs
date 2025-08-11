@@ -10,7 +10,6 @@ public class Player : MonoBehaviour
 
     [Header("Ground 체크")]
     public Transform groundCheck;
-    public float groundCheckDistance = 0.2f;
     public LayerMask groundLayer;
 
     [Header("점프 설정")]
