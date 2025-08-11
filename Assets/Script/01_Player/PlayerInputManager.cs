@@ -9,6 +9,7 @@ public class PlayerInputManager : MonoBehaviour
     private Vector2 _move;
 
     public event Action Jump;
+    public event Action Stair;
 
     private void Awake()
     {
@@ -24,9 +25,9 @@ public class PlayerInputManager : MonoBehaviour
     {
         ReadMove();
         DetectJumpPress();
+        DetectStairPress();
     }
-
-    // --- 입력 읽기 (함수화) ---
+    
     public void ReadMove()
     {
         _move = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
@@ -34,11 +35,20 @@ public class PlayerInputManager : MonoBehaviour
 
     public Vector2 GetMove() => _move;
     public float GetMoveX() => _move.x;
+    public float GetMoveY() => _move.y;
     public bool IsMovingHorizontally() => Mathf.Abs(_move.x) > 0.01f;
+    public bool IsMovingVertically() => Mathf.Abs(_move.y) > 0.01f;
 
     private void DetectJumpPress()
     {
         if (Input.GetKeyDown(KeyCode.Space))
             Jump?.Invoke();
+    }
+    private void DetectStairPress()
+    {
+        if (IsMovingVertically())
+        {
+            Stair?.Invoke();
+        }
     }
 }
