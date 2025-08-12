@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class GroundChecker2D : MonoBehaviour
@@ -9,9 +7,7 @@ public class GroundChecker2D : MonoBehaviour
 
     [Header("BoxCast 설정")]
     public float centerDownOffset = 0.05f;
-
     public Vector2 boxSize = new Vector2(0.2f, 0.05f);
-
     public float castDistance = 0.01f;
 
     [Header("지면 레이어/노멀 임계값")]
@@ -22,6 +18,7 @@ public class GroundChecker2D : MonoBehaviour
     public bool drawGizmos = true;
 
     public bool IsGrounded { get; private set; }
+    public Vector2 LastNormal { get; private set; } // 디버그용
 
     public void Refresh()
     {
@@ -44,8 +41,12 @@ public class GroundChecker2D : MonoBehaviour
         RaycastHit2D hit = Physics2D.BoxCast(boxCenter, size, 0f, Vector2.down, castDistance, groundLayer);
 
         if (hit.collider != null)
+        {
+            LastNormal = hit.normal;
             return hit.normal.y > normalYThreshold;
+        }
 
+        LastNormal = Vector2.zero;
         return false;
     }
 
@@ -64,4 +65,3 @@ public class GroundChecker2D : MonoBehaviour
         Gizmos.DrawLine(from, to);
     }
 }
-

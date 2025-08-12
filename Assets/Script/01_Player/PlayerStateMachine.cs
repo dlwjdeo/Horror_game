@@ -1,16 +1,13 @@
 using UnityEngine;
 public class PlayerStateMachine : MonoBehaviour
 {
-    public PlayerState CurrentState { get; private set; } = PlayerState.Idle;
+    [field: SerializeField]
+    public PlayerState Current { get; private set; } = PlayerState.Idle;
 
-    public void SetState(PlayerState newState)
+    public bool Is(PlayerState s) => Current == s;
+    public void SetState(PlayerState s)
     {
-        if (CurrentState != newState)
-        {
-            //Debug.Log($"[PlayerState] {CurrentState} ¡æ {newState}");
-            CurrentState = newState;
-        }
+        if (Current == s) return;
+        Current = s;
     }
-
-    public bool Is(PlayerState state) => CurrentState == state;
 }

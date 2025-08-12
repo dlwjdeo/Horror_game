@@ -1,11 +1,11 @@
-public enum PlayerState
+public enum PlayerState 
 {
-    Idle,
-    Moving,
-    Jumping,
-    Falling,
-    OnStair,
-    Hidden,
+    Idle, 
+    Moving, 
+    Jumping, 
+    Falling, 
+    Stair,
+    Hidden, 
     Interacting,
     GameOver
 }

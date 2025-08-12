@@ -1,7 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(Rigidbody2D), typeof(PlayerStateMachine))]
 public class PlayerMover : MonoBehaviour
 {
     [Header("이동 설정")]
@@ -12,90 +11,79 @@ public class PlayerMover : MonoBehaviour
     public int maxJumps = 1;
     private int remainingJumps;
 
-    [Header("계단 상태")]
-    public bool isOnStair;  // 현재 계단 상태
-    public bool isStair;    // 계단 트리거 안에 있는지(토글/컨텍스트용)
+    [Header("계단 이동")]
+    public float climbSpeed = 2.5f;
 
     [Header("참조")]
     public GroundChecker2D groundChecker;
-    private bool isGrounded;
+
     private Rigidbody2D rb;
+    private PlayerStateMachine playerStateMachine;
+    private float defaultGravity;
+
+    private bool prevGrounded;
+    private PlayerState prevState;
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        playerStateMachine = GetComponent<PlayerStateMachine>();
+        defaultGravity = rb.gravityScale;
         remainingJumps = maxJumps;
+    }
+
+    private void Update()
+    {
+        if (groundChecker != null) groundChecker.Refresh();
+        bool grounded = groundChecker != null && groundChecker.IsGrounded;
+
+        if (grounded && !prevGrounded && !playerStateMachine.Is(PlayerState.Stair))
+        {
+            remainingJumps = maxJumps;
+        }
+
+        if (grounded && prevState == PlayerState.Stair && !playerStateMachine.Is(PlayerState.Stair))
+        {
+            remainingJumps = maxJumps;
+        }
+
+        prevGrounded = grounded;
+        prevState = playerStateMachine.Current;
+    }
+
+    private void FixedUpdate()
+    {
+        var move = PlayerInputManager.Instance.GetMove();
+
+        switch (playerStateMachine.Current)
+        {
+            case PlayerState.Stair:
+                rb.gravityScale = 0f;
+                rb.velocity = new Vector2(0f, move.y * climbSpeed);
+                break;
+
+            default:
+                rb.gravityScale = defaultGravity; 
+                rb.velocity = new Vector2(move.x * moveSpeed, rb.velocity.y);
+                break;
+        }
     }
 
     private void OnEnable()
     {
-        PlayerInputManager.Instance.Jump += OnJumpPressed;
+        PlayerInputManager.Instance.Jump += TryJump;
     }
-
     private void OnDisable()
     {
-        PlayerInputManager.Instance.Jump -= OnJumpPressed;
+        PlayerInputManager.Instance.Jump -= TryJump;
     }
-    private void Update()
-    {
-        if (groundChecker != null) groundChecker.Refresh();
-        isGrounded = groundChecker.IsGrounded;
-
-        GroundCheckLogic();
-    }
-    private void FixedUpdate()
-    {
-        float x = PlayerInputManager.Instance.GetMoveX();
-        ApplyHorizontal(x);
-    }
-
-    private void ApplyHorizontal(float x)
-    {
-        rb.velocity = new Vector2(x * moveSpeed, rb.velocity.y);
-    }
-
-    private void OnJumpPressed()
-    {
-        TryJump();
-    }
-
     private void TryJump()
     {
+        if (playerStateMachine.Is(PlayerState.Stair)) return;
         if (remainingJumps <= 0) return;
 
-        ResetVerticalVelocity();
-        AddJumpImpulse(jumpForce);
-        remainingJumps--;
-    }
-
-    private void ResetVerticalVelocity()
-    {
         rb.velocity = new Vector2(rb.velocity.x, 0f);
-    }
-
-    private void AddJumpImpulse(float force)
-    {
-        rb.AddForce(Vector2.up * force, ForceMode2D.Impulse);
-    }
-
-    private void GroundCheckLogic()
-    {
-        if (isGrounded && !isOnStair)
-            remainingJumps = maxJumps;
-
-        if (isOnStair && !isStair && isGrounded)
-            ExitStair();
-    }
-
-    private void ExitStair()
-    {
-        isOnStair = false;
-        rb.gravityScale = 5f;
-
-        // 카메라 스위치(기존 조건 유지)
-        if (transform.position.y > 10f)
-            GameManager.Instance.cameraGroupController.ActivateCamera(CameraName.Floor2);
-        else
-            GameManager.Instance.cameraGroupController.ActivateCamera(CameraName.Floor1);
+        rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+        remainingJumps--;
     }
 }

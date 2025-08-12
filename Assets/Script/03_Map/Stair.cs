@@ -10,8 +10,7 @@ public class Stair : MonoBehaviour
     {
         if (collision.CompareTag(TagName.Player))
         {
-            if(GameManager.Instance.player.isOnStair == true)
-                Physics2D.IgnoreCollision(collision.GetComponent<Collider2D>(), Collider, true);
+            PlayerInputManager.Instance.SetStairTrigger(true);
         }
     }
 
@@ -19,7 +18,7 @@ public class Stair : MonoBehaviour
     {
         if (collision.CompareTag(TagName.Player)) 
         {
-            Physics2D.IgnoreCollision(collision.GetComponent<Collider2D>(), Collider, false);
+            PlayerInputManager.Instance.SetStairTrigger(false);
         }
     }
 }
