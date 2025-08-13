@@ -43,10 +43,8 @@ public class PlayerMover : MonoBehaviour
     {
         if (!jumpRequested) return;
         jumpRequested = false;
-        Debug.Log("리퀴스트 성공");
 
         if(!IsGrounded) return;
-        Debug.Log("점프 진입 성공");
         _rigidbody2D.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
     }
 

@@ -4,7 +4,7 @@ public class PlayerInteraction : MonoBehaviour
 {
     // 지금 닿아있는 상호작용 대상(가장 최근에 들어온 것 1개)
     private IInteractable _currentInteractable; // 상호작용 내용 실행
-    private IPromptSource _currentPromptSource; // prompt내용 받은 후 출력
+    private IPromptSource _currentPromptSource; // prompt내용 받은 후 출력 
 
     //접촉 시작
     private void OnTriggerEnter2D(Collider2D other)
@@ -31,10 +31,11 @@ public class PlayerInteraction : MonoBehaviour
             _currentPromptSource = null;    
         }
     }
-
+    //플레이어가 없어졌을 때 대비코드
     private void OnDisable()
     {
         _currentInteractable = null;
+        _currentPromptSource = null;
     }
     // Player에서 interactDown일 때 호출
     public void TryInteract()

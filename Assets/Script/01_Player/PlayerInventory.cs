@@ -24,7 +24,7 @@ public class PlayerInventory : MonoBehaviour
         heldItem.transform.SetParent(null);
         heldItem.transform.position = dropPosition;
         heldItem.gameObject.SetActive(true);
-        heldItem.ResetInteractable(); 
+        //heldItem.ResetInteractable(); 
         heldItem = null;
 
         UIManager.Instance.heldItemUI.ClearItemName();
