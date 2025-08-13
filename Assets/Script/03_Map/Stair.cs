@@ -10,7 +10,6 @@ public class Stair : MonoBehaviour
     {
         if (collision.CompareTag(TagName.Player))
         {
-            PlayerInputManager.Instance.SetStairTrigger(true);
         }
     }
 
@@ -18,7 +17,6 @@ public class Stair : MonoBehaviour
     {
         if (collision.CompareTag(TagName.Player)) 
         {
-            PlayerInputManager.Instance.SetStairTrigger(false);
         }
     }
 }

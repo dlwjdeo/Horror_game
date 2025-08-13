@@ -1,89 +1,61 @@
+// PlayerMover.cs
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody2D), typeof(PlayerStateMachine))]
+[RequireComponent(typeof(Rigidbody2D))]
 public class PlayerMover : MonoBehaviour
 {
-    [Header("이동 설정")]
-    public float moveSpeed = 5f;
-    public float jumpForce = 5f;
-
-    [Header("점프 설정")]
-    public int maxJumps = 1;
-    private int remainingJumps;
-
-    [Header("계단 이동")]
-    public float climbSpeed = 2.5f;
-
     [Header("참조")]
-    public GroundChecker2D groundChecker;
+    [SerializeField] private GroundChecker2D groundChecker2D;
 
-    private Rigidbody2D rb;
-    private PlayerStateMachine playerStateMachine;
-    private float defaultGravity;
+    [Header("Move")]
+    [SerializeField] private float moveSpeed = 6f;
 
-    private bool prevGrounded;
-    private PlayerState prevState;
+    [Header("Jump")]
+    [SerializeField] private float jumpForce = 7f;
+
+    [Header("Gravity")]
+    [SerializeField] private float baseGravityScale = 3.5f;
+    [SerializeField] private float maxFallSpeed = -16f;
+
+    private Rigidbody2D _rigidbody2D;
+    private bool jumpRequested;
+    public void RequestJump() => jumpRequested = true;
+
+    public bool IsGrounded => groundChecker2D && groundChecker2D.IsGrounded;
 
     private void Awake()
     {
-        rb = GetComponent<Rigidbody2D>();
-        playerStateMachine = GetComponent<PlayerStateMachine>();
-        defaultGravity = rb.gravityScale;
-        remainingJumps = maxJumps;
+        _rigidbody2D = GetComponent<Rigidbody2D>();
+        groundChecker2D = GetComponent<GroundChecker2D>();
+
+        _rigidbody2D.gravityScale = baseGravityScale;
+        _rigidbody2D.interpolation = RigidbodyInterpolation2D.Interpolate;
+        _rigidbody2D.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
     }
 
-    private void Update()
+    public void TickMove(float x, float y)
     {
-        if (groundChecker != null) groundChecker.Refresh();
-        bool grounded = groundChecker != null && groundChecker.IsGrounded;
-
-        if (grounded && !prevGrounded && !playerStateMachine.Is(PlayerState.Stair))
-        {
-            remainingJumps = maxJumps;
-        }
-
-        if (grounded && prevState == PlayerState.Stair && !playerStateMachine.Is(PlayerState.Stair))
-        {
-            remainingJumps = maxJumps;
-        }
-
-        prevGrounded = grounded;
-        prevState = playerStateMachine.Current;
+        ApplyHorizontal(x);
+        ApplyVertical();
     }
 
-    private void FixedUpdate()
+    public void TryJump()
     {
-        var move = PlayerInputManager.Instance.GetMove();
+        if (!jumpRequested) return;
+        jumpRequested = false;
+        Debug.Log("리퀴스트 성공");
 
-        switch (playerStateMachine.Current)
-        {
-            case PlayerState.Stair:
-                rb.gravityScale = 0f;
-                rb.velocity = new Vector2(0f, move.y * climbSpeed);
-                break;
-
-            default:
-                rb.gravityScale = defaultGravity; 
-                rb.velocity = new Vector2(move.x * moveSpeed, rb.velocity.y);
-                break;
-        }
+        if(!IsGrounded) return;
+        Debug.Log("점프 진입 성공");
+        _rigidbody2D.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
     }
 
-    private void OnEnable()
+    private void ApplyHorizontal(float x)
     {
-        PlayerInputManager.Instance.Jump += TryJump;
+        _rigidbody2D.velocity = new Vector2(x * moveSpeed, _rigidbody2D.velocity.y);
     }
-    private void OnDisable()
+    private void ApplyVertical()
     {
-        PlayerInputManager.Instance.Jump -= TryJump;
-    }
-    private void TryJump()
-    {
-        if (playerStateMachine.Is(PlayerState.Stair)) return;
-        if (remainingJumps <= 0) return;
-
-        rb.velocity = new Vector2(rb.velocity.x, 0f);
-        rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
-        remainingJumps--;
+        _rigidbody2D.velocity = new Vector2(_rigidbody2D.velocity.x, Mathf.Max(_rigidbody2D.velocity.y, maxFallSpeed));
     }
 }

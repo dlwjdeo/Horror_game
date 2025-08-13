@@ -3,68 +3,50 @@ using UnityEngine;
 [RequireComponent(typeof(PlayerStateMachine))]
 public class Player : MonoBehaviour
 {
-    public GroundChecker2D groundChecker; // 네가 쓰던 체크러 사용
-    public float stairExitGrace = 0.1f;
+    [Header("모듈")]
+    [SerializeField] private PlayerMover playerMover;
+    [SerializeField] private PlayerInteraction playerInteraction;
 
-    private PlayerStateMachine playerStateMachine;
-    private float stairLostAt = float.NegativeInfinity;
-
-    
+    //캐시
+    private float moveX, moveY;
+    private bool jumpDown, interactDown, dropDown;
+    private PlayerInputManager playerInputManager;
 
     private void Awake()
     {
-        playerStateMachine = GetComponent<PlayerStateMachine>();
+        playerMover = GetComponent<PlayerMover>();
+        playerInteraction = GetComponent<PlayerInteraction>();
     }
 
     private void Update()
     {
-        var input = PlayerInputManager.Instance;
-        var move = input.GetMove();
-        bool inStair = input.isInStairTrigger;
-        bool grounded = groundChecker != null && groundChecker.IsGrounded;
+        ReadInput();
+        DispatchInstantActions();
+    }
 
-        if (playerStateMachine.Is(PlayerState.Stair))
-        {
-            if (groundChecker.IsGrounded)
-            {
-                playerStateMachine.SetState(PlayerState.Idle);
-                return;
-            }
+    private void FixedUpdate()
+    {
+        playerMover.TickMove(moveX, moveY);
+        playerMover.TryJump();
+    }
 
-            if (inStair)
-            {
-                stairLostAt = float.NegativeInfinity;
-            }
-            else
-            {
-                if (float.IsNegativeInfinity(stairLostAt))
-                    stairLostAt = Time.fixedTime;
+    private void ReadInput()//인풋 캐시 저장
+    {
+        var input = playerInputManager ?? PlayerInputManager.Instance;
+        if (input == null) return;
 
-                if (Time.fixedTime - stairLostAt >= stairExitGrace)
-                {
-                    playerStateMachine.SetState(PlayerState.Idle);
-                    return;
-                }
-            }
+        moveX = input.MoveX();
+        moveY = input.MoveY();
+        interactDown = input.InteractPressedThisFrame();
+        jumpDown = input.JumpPressedThisFrame();
+        dropDown = input.DropPressedThisFrame();
+    }
 
-            return;
-        }
-
-        if (inStair && Mathf.Abs(move.y) > 0.1f)
-        {
-            playerStateMachine.SetState(PlayerState.Stair);
-            return;
-        }
-
-        if (!grounded)
-        {
-            if (GetComponent<Rigidbody2D>().velocity.y > 0.1f) playerStateMachine.SetState(PlayerState.Jumping);
-            else if (GetComponent<Rigidbody2D>().velocity.y < -0.1f) playerStateMachine.SetState(PlayerState.Falling);
-        }
-        else
-        {
-            if (Mathf.Abs(move.x) > 0.1f) playerStateMachine.SetState(PlayerState.Moving);
-            else playerStateMachine.SetState(PlayerState.Idle);
-        }
+    private void DispatchInstantActions()//저장된 인풋캐시로 실행
+    {
+        if (interactDown)
+           playerInteraction.TryInteract();
+        if (jumpDown)
+            playerMover.RequestJump();
     }
 }

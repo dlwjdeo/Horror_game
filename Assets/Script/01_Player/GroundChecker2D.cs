@@ -1,67 +1,73 @@
 using UnityEngine;
 
+[DefaultExecutionOrder(-50)] // Player/PlayerMover(기본 0)보다 먼저 실행되게 함
 public class GroundChecker2D : MonoBehaviour
 {
     [Header("체크 기준점(발 위치)")]
-    public Transform groundCheck;
+    public Transform groundCheck;                 // 없으면 현재 transform 사용
 
     [Header("BoxCast 설정")]
-    public float centerDownOffset = 0.05f;
     public Vector2 boxSize = new Vector2(0.2f, 0.05f);
-    public float castDistance = 0.01f;
-
-    [Header("지면 레이어/노멀 임계값")]
-    public LayerMask groundLayer;
-    [Range(0f, 1f)] public float normalYThreshold = 0.7f;
+    public float castDistance = 0.02f;            // 아래 방향으로 얼마만큼 쏠지
+    public LayerMask groundLayer;                 // 지면으로 취급할 레이어
 
     [Header("디버그")]
     public bool drawGizmos = true;
 
+    // 결과값 (읽기 전용)
     public bool IsGrounded { get; private set; }
-    public Vector2 LastNormal { get; private set; } // 디버그용
+    public RaycastHit2D LastHit { get; private set; }
+    public Collider2D GroundCollider { get; private set; }
 
+    /// <summary>
+    /// 접지 상태를 즉시 갱신한다.
+    /// - 언제: FixedUpdate에서 자동 호출(물리 스텝과 동기화). 필요 시 외부에서 수동 호출 가능.
+    /// - 무엇: 기준점에서 아래로 BoxCast하여 groundLayer와 닿았는지 확인.
+    /// - 결과: IsGrounded/LastHit/GroundCollider를 최신값으로 저장.
+    /// </summary>
     public void Refresh()
     {
-        IsGrounded = CheckGrounded();
-    }
+        Vector2 origin = groundCheck ? (Vector2)groundCheck.position : (Vector2)transform.position;
 
-    public bool CheckNow()
-    {
-        Refresh();
-        return IsGrounded;
-    }
-
-    private bool CheckGrounded()
-    {
-        if (groundCheck == null) groundCheck = transform;
-
-        Vector2 boxCenter = (Vector2)groundCheck.position + Vector2.down * centerDownOffset;
-        Vector2 size = boxSize;
-
-        RaycastHit2D hit = Physics2D.BoxCast(boxCenter, size, 0f, Vector2.down, castDistance, groundLayer);
+        var hit = Physics2D.BoxCast(origin, boxSize, 0f, Vector2.down, castDistance, groundLayer);
 
         if (hit.collider != null)
         {
-            LastNormal = hit.normal;
-            return hit.normal.y > normalYThreshold;
+            IsGrounded = true;
+            LastHit = hit;
+            GroundCollider = hit.collider;
         }
+        else
+        {
+            IsGrounded = false;
+            LastHit = default;
+            GroundCollider = null;
+        }
+    }
 
-        LastNormal = Vector2.zero;
-        return false;
+    private void FixedUpdate()
+    {
+        Refresh();
     }
 
     private void OnDrawGizmosSelected()
     {
         if (!drawGizmos) return;
-        if (groundCheck == null) groundCheck = transform;
+        Vector2 origin = groundCheck ? (Vector2)groundCheck.position : (Vector2)transform.position;
 
-        Vector2 boxCenter = (Vector2)groundCheck.position + Vector2.down * centerDownOffset;
         Gizmos.color = IsGrounded ? Color.green : Color.red;
+        Gizmos.DrawWireCube(origin + Vector2.down * castDistance, boxSize);
 
-        Gizmos.DrawWireCube(boxCenter, boxSize);
+        if (IsGrounded)
+        {
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawSphere(LastHit.point, 0.03f); // 접지 지점만 표시(법선/각도 제거)
+        }
+    }
 
-        Vector3 from = boxCenter;
-        Vector3 to = boxCenter + Vector2.down * castDistance;
-        Gizmos.DrawLine(from, to);
+    private void OnValidate()
+    {
+        boxSize = new Vector2(Mathf.Max(0.001f, boxSize.x), Mathf.Max(0.001f, boxSize.y));
+        castDistance = Mathf.Max(0.0001f, castDistance);
     }
 }
