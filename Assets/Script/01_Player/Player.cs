@@ -30,7 +30,7 @@ public class Player : MonoBehaviour
         playerMover.TryJump();
     }
 
-    private void ReadInput()//인풋 캐시 저장
+    private void ReadInput()    //인풋 캐시 저장
     {
         var input = playerInputManager ?? PlayerInputManager.Instance;
         if (input == null) return;
@@ -42,11 +42,11 @@ public class Player : MonoBehaviour
         dropDown = input.DropPressedThisFrame();
     }
 
-    private void DispatchInstantActions()//저장된 인풋캐시로 실행
+    private void DispatchInstantActions()   //저장된 인풋캐시로 실행
     {
         if (interactDown)
            playerInteraction.TryInteract();
         if (jumpDown)
-            playerMover.RequestJump();
+            playerMover.RequestJump();  //물리 동작이기 때문에 리퀘스트 Update -> 실제 동작은 fixedUpdate
     }
 }

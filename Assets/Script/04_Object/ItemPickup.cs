@@ -1,10 +1,17 @@
 using UnityEngine;
 
-public class ItemPickup : Interactable
+public class ItemPickup : MonoBehaviour, IInteractable, IPromptSource
 {
     public ItemType itemType;
 
-    private void Awake()
+    public string promptText => throw new System.NotImplementedException();
+
+    public void Interact(GameObject interactor)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    /*private void Awake()
     {
         promptMessage = "E키를 눌러 아이템 줍기";
         interactMessage = $"{itemType}을(를) 획득했다";
@@ -29,5 +36,5 @@ public class ItemPickup : Interactable
     public void ResetInteractable()
     {
         isPlayerInRange = false;
-    }
+    }*/
 }

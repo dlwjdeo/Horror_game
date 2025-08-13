@@ -1,35 +1,11 @@
 using UnityEngine;
 
-public class LampCharger : Interactable
+public class LampCharger : MonoBehaviour, IInteractable, IPromptSource
 {
-    public float restoreAmount = 30f;
+    public string promptText => throw new System.NotImplementedException();
 
-    private void Reset()
+    public void Interact(GameObject interactor)
     {
-        promptMessage = "E키를 눌러 충전하기";
-        interactMessage = "램프가 조금 따뜻해졌다";
-    }
-
-    private void Awake()
-    {
-        if (string.IsNullOrWhiteSpace(promptMessage))
-            promptMessage = "E키를 눌러 충전하기";
-
-        if (string.IsNullOrWhiteSpace(interactMessage))
-            interactMessage = "램프가 조금 따뜻해졌다";
-    }
-
-    protected override void Interact()
-    {
-        base.Interact();
-
-        LampController lamp = player.GetComponent<LampController>();
-        if (lamp != null)
-        {
-            lamp.RestoreLamp(restoreAmount);
-        }
-
-        promptUI.Hide();
-        Destroy(gameObject);
+        throw new System.NotImplementedException();
     }
 }
