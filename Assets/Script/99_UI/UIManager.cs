@@ -22,4 +22,9 @@ public class UIManager : MonoBehaviour
             Destroy(gameObject);
         }
     }
+
+    public void ShowInteractUI(string message)
+    {
+        interactionUI.ShowMessage(message);
+    }
 }
