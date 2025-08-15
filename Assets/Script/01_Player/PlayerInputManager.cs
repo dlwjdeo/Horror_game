@@ -31,7 +31,6 @@ public class PlayerInputManager : MonoBehaviour
 
     }
 
-    // ----- 외부 API (폴링) -----
     public float MoveX() => moveX;
     public float MoveY() => moveY;
 

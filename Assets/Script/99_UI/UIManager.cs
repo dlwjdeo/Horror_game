@@ -27,4 +27,9 @@ public class UIManager : MonoBehaviour
     {
         interactionUI.ShowMessage(message);
     }
+
+    public void ChargeLamp(float amount)
+    {
+        lampGauge.AddLamp(amount);
+    }
 }

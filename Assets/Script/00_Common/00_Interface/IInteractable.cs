@@ -6,4 +6,6 @@ public interface IInteractable
     void Interact(GameObject interactor);
 
     event Action<string> Interacted;
+
+    //int priority { get; }
 }

@@ -6,6 +6,7 @@ public class Player : MonoBehaviour
     [Header("모듈")]
     [SerializeField] private PlayerMover playerMover;
     [SerializeField] private PlayerInteraction playerInteraction;
+    [SerializeField] private PlayerInventory playerInventory;
 
     //캐시
     private float moveX, moveY;
@@ -16,6 +17,7 @@ public class Player : MonoBehaviour
     {
         playerMover = GetComponent<PlayerMover>();
         playerInteraction = GetComponent<PlayerInteraction>();
+        playerInventory = GetComponent<PlayerInventory>();
     }
 
     private void Update()
@@ -48,5 +50,7 @@ public class Player : MonoBehaviour
            playerInteraction.TryInteract();
         if (jumpDown)
             playerMover.RequestJump();  //물리 동작이기 때문에 리퀘스트 Update -> 실제 동작은 fixedUpdate
+        if (dropDown)
+            playerInventory.DropItem(transform.position);
     }
 }

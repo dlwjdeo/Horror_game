@@ -10,6 +10,7 @@ public class PlayerInventory : MonoBehaviour
 
     public void HoldItem(ItemPickup item)
     {
+        Debug.Log("아이템 들기");
         heldItem = item;
         heldItem.gameObject.SetActive(false);
         heldItem.transform.SetParent(transform);

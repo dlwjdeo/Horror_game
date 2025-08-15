@@ -9,8 +9,9 @@ public class PlayerInteraction : MonoBehaviour
     private bool isInteractive;
 
     //¡¢√À Ω√¿€
-    private void OnTriggerEnter2D(Collider2D other)
+    private void OnTriggerStay2D(Collider2D other)
     {
+        if (isInteractive) return;
         if (other.TryGetComponent<IInteractable>(out var interactable)) 
         {
             _currentInteractable = interactable;
