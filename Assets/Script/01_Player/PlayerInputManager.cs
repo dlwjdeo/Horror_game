@@ -7,7 +7,7 @@ public class PlayerInputManager : MonoBehaviour
 
     // 캐시
     private float moveX, moveY;
-    private bool jumpDown, interactDown, dropDown;
+    private bool jumpDown, interactDown, dropDown,stair;
 
 
     private void Awake()
@@ -28,6 +28,7 @@ public class PlayerInputManager : MonoBehaviour
         jumpDown = Input.GetKeyDown(KeyCode.Space);
         interactDown = Input.GetKeyDown(KeyCode.E);
         dropDown = Input.GetKeyDown(KeyCode.Q); //아이템 드롭
+        stair = Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.W);
 
     }
 
@@ -39,6 +40,7 @@ public class PlayerInputManager : MonoBehaviour
     public bool JumpPressedThisFrame() => jumpDown;
     public bool InteractPressedThisFrame() => interactDown;
     public bool DropPressedThisFrame() => dropDown;
+    public bool StairPressedThisFrame() => stair;
 
 
 }

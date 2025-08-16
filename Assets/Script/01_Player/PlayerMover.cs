@@ -15,13 +15,18 @@ public class PlayerMover : MonoBehaviour
 
     [Header("Gravity")]
     [SerializeField] private float baseGravityScale = 3.5f;
-    [SerializeField] private float maxFallSpeed = -16f;
 
     private Rigidbody2D _rigidbody2D;
     private bool jumpRequested;
     public void RequestJump() => jumpRequested = true;
 
     public bool IsGrounded => groundChecker2D && groundChecker2D.IsGrounded;
+    public bool IsOnStair => isOnStair;
+
+    private bool isOnStair;
+    private bool isStair;
+    private float exitStairTimer;
+    private float enterStairTimer;
 
     private void Awake()
     {
@@ -33,10 +38,25 @@ public class PlayerMover : MonoBehaviour
         _rigidbody2D.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
     }
 
+    private void Update()
+    {
+        if(exitStairTimer >= 0)
+        {
+            exitStairTimer -= Time.deltaTime;
+        }
+        if(enterStairTimer >= 0)
+        {
+            enterStairTimer -= Time.deltaTime;
+        }
+        UpdateGroundCheck();
+    }
+
     public void TickMove(float x, float y)
     {
-        ApplyHorizontal(x);
-        ApplyVertical();
+        if (!isOnStair) 
+            ApplyHorizontal(x);
+        else
+            ApplyVerticalOnStair(y);
     }
 
     public void TryJump()
@@ -52,8 +72,46 @@ public class PlayerMover : MonoBehaviour
     {
         _rigidbody2D.velocity = new Vector2(x * moveSpeed, _rigidbody2D.velocity.y);
     }
-    private void ApplyVertical()
+    private void ApplyVerticalOnStair(float y)
     {
-        _rigidbody2D.velocity = new Vector2(_rigidbody2D.velocity.x, Mathf.Max(_rigidbody2D.velocity.y, maxFallSpeed));
+        _rigidbody2D.velocity = new Vector2(0, y * moveSpeed);
+    }
+
+    public void SetGravityScale(float gravityScale)
+    {
+        _rigidbody2D.gravityScale = gravityScale;
+    }
+
+    public void EnterStair()
+    {
+        if(!isStair && enterStairTimer <= 0) return;
+        Debug.Log("ÀÔÀå");
+        isOnStair = true;
+        SetGravityScale(0f);
+        exitStairTimer = 0.5f;
+        gameObject.layer = LayerMask.NameToLayer("PlayerStair");
+    }
+    public void ExitStair()
+    {
+        Debug.Log("Å»Ãâ");
+        enterStairTimer = 2f;
+        isOnStair = false;
+        SetGravityScale(baseGravityScale);
+        gameObject.layer = LayerMask.NameToLayer("Player");
+    }
+    public void SetStair(bool stair)
+    { 
+        isStair = stair;
+    }
+
+    public bool GetStair()
+    {
+        return isStair;
+    }
+
+    private void UpdateGroundCheck()
+    {
+        if(exitStairTimer <= 0 && IsGrounded && isOnStair)
+            ExitStair();
     }
 }

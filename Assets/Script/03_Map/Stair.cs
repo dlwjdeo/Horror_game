@@ -4,12 +4,14 @@ using UnityEngine;
 
 public class Stair : MonoBehaviour
 {
-    public Collider2D Collider;
+    private PlayerMover playerMover;
 
-    private void OnTriggerStay2D(Collider2D collision)
+    private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.CompareTag(TagName.Player))
         {
+            playerMover = collision.GetComponent<PlayerMover>();
+            playerMover.SetStair(true);
         }
     }
 
@@ -17,6 +19,8 @@ public class Stair : MonoBehaviour
     {
         if (collision.CompareTag(TagName.Player)) 
         {
+            playerMover.SetStair(false);
+            //playerMover.ExitStair();
         }
     }
 }

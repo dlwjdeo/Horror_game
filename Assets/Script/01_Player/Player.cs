@@ -10,7 +10,7 @@ public class Player : MonoBehaviour
 
     //캐시
     private float moveX, moveY;
-    private bool jumpDown, interactDown, dropDown;
+    private bool jumpDown, interactDown, dropDown,stair;
     private PlayerInputManager playerInputManager;
 
     private void Awake()
@@ -42,6 +42,7 @@ public class Player : MonoBehaviour
         interactDown = input.InteractPressedThisFrame();
         jumpDown = input.JumpPressedThisFrame();
         dropDown = input.DropPressedThisFrame();
+        stair = input.StairPressedThisFrame();
     }
 
     private void DispatchInstantActions()   //저장된 인풋캐시로 실행
@@ -52,5 +53,7 @@ public class Player : MonoBehaviour
             playerMover.RequestJump();  //물리 동작이기 때문에 리퀘스트 Update -> 실제 동작은 fixedUpdate
         if (dropDown)
             playerInventory.DropItem(transform.position);
+        if (stair && !playerMover.IsOnStair)
+            playerMover.EnterStair();
     }
 }

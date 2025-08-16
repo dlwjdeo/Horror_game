@@ -19,19 +19,13 @@ public class GroundChecker2D : MonoBehaviour
     public RaycastHit2D LastHit { get; private set; }
     public Collider2D GroundCollider { get; private set; }
 
-    /// <summary>
-    /// 접지 상태를 즉시 갱신한다.
-    /// - 언제: FixedUpdate에서 자동 호출(물리 스텝과 동기화). 필요 시 외부에서 수동 호출 가능.
-    /// - 무엇: 기준점에서 아래로 BoxCast하여 groundLayer와 닿았는지 확인.
-    /// - 결과: IsGrounded/LastHit/GroundCollider를 최신값으로 저장.
-    /// </summary>
     public void Refresh()
     {
         Vector2 origin = groundCheck ? (Vector2)groundCheck.position : (Vector2)transform.position;
 
         var hit = Physics2D.BoxCast(origin, boxSize, 0f, Vector2.down, castDistance, groundLayer);
 
-        if (hit.collider != null)
+        if (hit.collider != null && hit.normal.y >= 0.9f)
         {
             IsGrounded = true;
             LastHit = hit;
